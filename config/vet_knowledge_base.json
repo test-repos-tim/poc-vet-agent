@@ -1,0 +1,56 @@
+{
+  "clinic": {
+    "name": "Paws & Claws Animal Hospital",
+    "address": "123 Main Street, Springfield",
+    "phone": "(555) 123-4567",
+    "hours": {
+      "monday": "8am-8pm",
+      "tuesday": "8am-8pm",
+      "wednesday": "8am-8pm",
+      "thursday": "8am-8pm",
+      "friday": "8am-8pm",
+      "saturday": "9am-5pm",
+      "sunday": "Closed"
+    },
+    "services": [
+      "Emergency care",
+      "Wellness exams",
+      "Surgery",
+      "Dental care",
+      "Prescriptions",
+      "Vaccinations"
+    ]
+  },
+  "faqs": [
+    {
+      "id": "hours",
+      "question": "What are your hours?",
+      "answer": "We are open Monday-Friday 8am-8pm, Saturday 9am-5pm. Closed Sundays."
+    },
+    {
+      "id": "emergency",
+      "question": "Do you handle emergencies?",
+      "answer": "Yes, we handle emergency cases during business hours. For after-hours emergencies, please call us at (555) 123-4567."
+    },
+    {
+      "id": "appointments",
+      "question": "How do I book an appointment?",
+      "answer": "You can book by calling us or using the chat widget. Provide pet name, species, preferred date/time, and reason for visit."
+    },
+    {
+      "id": "prescriptions",
+      "question": "Can I refill a prescription?",
+      "answer": "Yes. Provide pet name, medication name, dosage, and pharmacy contact. We will process your refill request."
+    },
+    {
+      "id": "location",
+      "question": "Where are you located?",
+      "answer": "Paws & Claws Animal Hospital, 123 Main Street, Springfield."
+    },
+    {
+      "id": "services",
+      "question": "What services do you offer?",
+      "answer": "Emergency care, wellness exams, surgery, dental care, prescriptions, and vaccinations."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paws &amp; Claws Animal Hospital</title>
+  <link rel="stylesheet" href="chat.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Paws &amp; Claws Animal Hospital</h1>
+      <p class="subtitle">Caring for your pets since 2010</p>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h2>Healthy Pets. Happy Families.</h2>
+      <p>Located in downtown Springfield. Emergency care, routine checkups, vaccinations, surgery, and dental.</p>
+    </div>
+  </section>
+
+  <section class="services">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="service-grid">
+        <div class="service-card">
+          <h3>Emergency Care</h3>
+          <p>24/7 emergency vet services for critical cases.</p>
+        </div>
+        <div class="service-card">
+          <h3>Wellness Exams</h3>
+          <p>Routine checkups, vaccinations, and preventive care.</p>
+        </div>
+        <div class="service-card">
+          <h3>Surgery</h3>
+          <p>Soft-tissue and orthopedic surgery with modern anesthesia.</p>
+        </div>
+        <div class="service-card">
+          <h3>Dental Care</h3>
+          <p>Cleanings, extractions, and oral health assessments.</p>
+        </div>
+        <div class="service-card">
+          <h3>Prescriptions</h3>
+          <p>In-house pharmacy with refill requests via chat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p>📍 123 Main Street, Springfield</p>
+      <p>📞 (555) 123-4567</p>
+      <p>🕐 Mon-Fri: 8am-8pm, Sat: 9am-5pm, Sun: Closed</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Paws &amp; Claws Animal Hospital. Demo — local POC only.</p>
+    </div>
+  </footer>
+
+  <!-- Chat Widget -->
+  <div id="chat-widget">
+    <button id="chat-toggle" aria-label="Open chat">💬 Chat</button>
+    <div id="chat-window" class="hidden">
+      <div class="chat-header">
+        <span>Vet Assistant</span>
+        <button id="chat-close" aria-label="Close chat">✕</button>
+      </div>
+      <div id="chat-messages" class="chat-messages">
+        <div class="message bot">Hello! How can I help you with your pet today?</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chat-input" placeholder="Type your question..." />
+        <button id="chat-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+/* Chat Widget Styles — uses :where() scoping per project conventions */
+#chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-family: system-ui, sans-serif;
+  z-index: 1000;
+}
+
+#chat-toggle {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#chat-toggle:hover { background: #4338ca; }
+
+#chat-window.hidden { display: none; }
+
+#chat-window {
+  width: 360px;
+  height: 520px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #4f46e5;
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+#chat-close {
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message.bot {
+  background: #e5e7eb;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.message.user {
+  background: #4f46e5;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-input {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  gap: 8px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.chat-input button {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.chat-input button:hover { background: #4338ca; }
+
+@media (max-width: 480px) {
+  #chat-window { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
+}
