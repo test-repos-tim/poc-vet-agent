@@ -1,7 +1,6 @@
 /**
  * chat.js — Chat widget client for POC Vet Agent Demo
- * Communicates with local Hermes agent API bridge via REST endpoint.
- * Phase 1: Website stub. Chat messages are logged locally until Phase 2 API bridge is built.
+ * Communicates with local Flask API bridge via REST endpoint.
  */
 
 (function () {
@@ -12,8 +11,8 @@
   const inputEl = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
 
-  // Local message buffer for Phase 1 (will be wired to Hermes API in Phase 2)
-  let messageHistory = [];
+  // Flask API bridge endpoint (running on localhost:5000)
+  const API_URL = 'http://localhost:5000/chat';
 
   toggle.addEventListener('click', () => {
     windowEl.classList.toggle('hidden');
@@ -28,7 +27,6 @@
     div.textContent = text;
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
-    messageHistory.push({ text, isUser, ts: Date.now() });
   }
 
   function appendBotReply(text) {
@@ -44,28 +42,29 @@
     addMessage(text, true);
     inputEl.value = '';
 
-    // Phase 1: Simulated responses (will be replaced by Hermes API call in Phase 2)
-    const reply = generateBotReply(text);
-    setTimeout(() => appendBotReply(reply), 600);
-  }
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot';
+    typingDiv.textContent = 'Typing...';
+    messagesEl.appendChild(typingDiv);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
 
-  function generateBotReply(text) {
-    const lower = text.toLowerCase();
-    if (lower.includes('appoint') || lower.includes('book')) {
-      return 'I can help you book an appointment. Please provide: pet name, species, preferred date/time, and reason for visit.';
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      if (!response.ok) {
+        throw new Error('Network error: ' + response.status);
+      }
+      const data = await response.json();
+      messagesEl.removeChild(typingDiv);
+      appendBotReply(data.reply);
+    } catch (err) {
+      messagesEl.removeChild(typingDiv);
+      appendBotReply('Sorry, I am offline right now. Please call (555) 123-4567 for urgent needs.');
+      console.error('Chat API error:', err);
     }
-    if (lower.includes('emergency') || lower.includes('urgent')) {
-      return 'If this is an emergency, please call us immediately at (555) 123-4567 or bring your pet to our clinic. We are open Mon-Fri until 8pm.';
-    }
-    if (lower.includes('prescription') || lower.includes('refill')) {
-      return 'For prescription refills, please provide: pet name, medication name, dosage, and your pharmacy contact.';
-    }
-    if (lower.includes('hour') || lower.includes('open') || lower.includes('time')) {
-      return 'Our hours are Monday-Friday 8am-8pm, Saturday 9am-5pm. Closed Sundays.';
-    }
-    if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-      return 'Hello! I am the virtual assistant for Paws & Claws Animal Hospital. How can I help your pet today?';
-    }
-    return 'I am still learning. For urgent questions, please call (555) 123-4567. I can help with appointments, hours, and prescription refills.';
   }
 })();
