@@ -2,13 +2,14 @@
 """
 bridge/http_server.py — Zero-dependency HTTP server for vet agent.
 Runs on localhost:5000. Uses only stdlib (http.server, json, sqlite3).
+Handles both GET and POST for /chat endpoint.
 """
 import json
 import sqlite3
 import os
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 KB_PATH = os.path.join(os.path.dirname(__file__), '..', 'config', 'vet_knowledge_base.json')
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'vet_agent.db')
@@ -29,9 +30,10 @@ def reply(msg):
     return 'I can help with appointments, hours, prescriptions. Call (555) 123-4567 for urgent needs.'
 
 class Handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        path = urlparse(self.path).path
-        if path == '/chat':
+    def _handle_chat(self):
+        """Shared handler for GET and POST — extracts message from either method."""
+        msg = ''
+        if self.command == 'POST':
             length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(length).decode()
             try:
@@ -39,36 +41,64 @@ class Handler(BaseHTTPRequestHandler):
                 msg = data.get('message', '')
             except:
                 msg = body
-            bot = reply(msg)
-            # Log to SQLite
-            try:
-                conn = sqlite3.connect(DB_PATH)
-                conn.execute("INSERT INTO conversations (session_id, user_message, bot_response, timestamp) VALUES (?, ?, ?, ?)",
-                             ("default", msg, bot, datetime.now().isoformat()))
-                conn.commit(); conn.close()
-            except Exception:
-                pass
-            resp = json.dumps({"reply": bot}).encode()
-            self.send_response(200)
+        else:  # GET
+            parsed = urlparse(self.path)
+            qs = parse_qs(parsed.query)
+            msg = qs.get('message', [''])[0]
+            if not msg:
+                # Fallback: try query string as plain text
+                msg = parsed.query
+
+        if not msg:
+            self.send_response(400)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(resp)
+            self.wfile.write(json.dumps({'error': 'No message provided'}).encode())
+            return
+
+        bot = reply(msg)
+        # Log to SQLite
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            conn.execute("INSERT INTO conversations (session_id, user_message, bot_response, timestamp) VALUES (?, ?, ?, ?)",
+                         ("default", msg, bot, datetime.now().isoformat()))
+            conn.commit(); conn.close()
+        except Exception:
+            pass
+
+        resp = json.dumps({"reply": bot}).encode()
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(resp)
+
+    def do_POST(self):
+        path = urlparse(self.path).path
+        if path == '/chat':
+            self._handle_chat()
+        else:
+            self.send_response(404); self.end_headers()
+
+    def do_GET(self):
+        path = urlparse(self.path).path
+        if path == '/chat':
+            self._handle_chat()
         else:
             self.send_response(404); self.end_headers()
 
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
     def log_message(self, fmt, *args):
-        # Suppress default request logging; use SQLite instead
-        pass
+        pass  # Suppress default logging
 
 if __name__ == '__main__':
     srv = HTTPServer(('0.0.0.0', 5000), Handler)
-    print('Vet Agent Bridge running on http://localhost:5000/chat')
+    print('Vet Agent Bridge running on http://localhost:5000/chat (GET + POST)')
     srv.serve_forever()
